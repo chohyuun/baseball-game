@@ -9,7 +9,9 @@ public class Main {
 
         BaseballGame baseballGame = new BaseballGame();
         HashSet<Integer> randomNum = baseballGame.randomNum();
+        Map<Integer, Integer> gameCount = new HashMap<>();
 
+        int count = 0;
         // 게임을 다시 시작했는지 확인하기 위한 변수
         boolean gameReset = true;
 
@@ -30,11 +32,21 @@ public class Main {
                 gameType = scanner.nextLine();
 
                 if (Objects.equals(gameType, "3")) {
+                    // 게임 종료
                     System.out.println("게임이 종료 됩니다! 감사!");
                     break;
                 } else if (Objects.equals(gameType, "2")) {
-                    // todo: Lv3에서 추가하기
+                    // 게임 기록 확인
+                    if(gameCount.isEmpty()){
+                        System.out.println("게임을 시작한 적이 없어 기록이 없습니다. 게임 시도 후 다시 확인해 주세요.");
+                        continue;
+                    }
+                    gameCount.forEach((key, value) -> {
+                        System.out.println(key + "번째 게임 : 시도 횟수 - " + value);
+                    });
+                    continue;
                 } else if (!Objects.equals(gameType, "1")) {
+                    // 잘못된 문자 입력을 받았을 경우 예외 처리
                     System.out.println("선택 가능한 숫자를 입력해 주세요.");
                     continue;
                 }
@@ -89,11 +101,15 @@ public class Main {
                 index.set(index.get() + 1);
             });
 
+            count ++;
+
             // 게임 종료 체크
             if (strikeBallCheck.get("Strike") > 2) {
                 System.out.println("3 Strike! Game is over!");
                 gameReset = true;
                 scanner.nextLine();
+                gameCount.put(gameCount.size() + 1, count);
+                count = 0;
             } else if (strikeBallCheck.get("Strike") != 0 || strikeBallCheck.get("Ball") != 0) {
                 System.out.println(strikeBallCheck.get("Strike") + " Strike, " + strikeBallCheck.get("Ball") + " Ball");
             } else {
