@@ -6,9 +6,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        BaseballGame baseballGame = new BaseballGame();
 
+        BaseballGame baseballGame = new BaseballGame();
         HashSet<Integer> randomNum = baseballGame.randomNum();
+
+        // 게임을 다시 시작했는지 확인하기 위한 변수
+        boolean gameReset = true;
 
         while (true) {
             Map<String, Integer> strikeBallCheck = new HashMap<>() {{
@@ -18,6 +21,25 @@ public class Main {
 
             ArrayList<Integer> result = new ArrayList<>(3);
             AtomicInteger index = new AtomicInteger();
+
+            String gameType;
+
+            if(gameReset) {
+                System.out.print("1. 게임 시작  2. 게임 기록 보기  3. 종료하기 \n입력: ");
+
+                gameType = scanner.nextLine();
+
+                if (Objects.equals(gameType, "3")) {
+                    System.out.println("게임이 종료 됩니다! 감사!");
+                    break;
+                } else if (Objects.equals(gameType, "2")) {
+                    // todo: Lv3에서 추가하기
+                } else if (!Objects.equals(gameType, "1")) {
+                    System.out.println("선택 가능한 숫자를 입력해 주세요.");
+                    continue;
+                }
+                gameReset = false;
+            }
 
             int inputResultNum = 0;
 
@@ -70,7 +92,8 @@ public class Main {
             // 게임 종료 체크
             if (strikeBallCheck.get("Strike") > 2) {
                 System.out.println("3 Strike! Game is over!");
-                break;
+                gameReset = true;
+                scanner.nextLine();
             } else if (strikeBallCheck.get("Strike") != 0 || strikeBallCheck.get("Ball") != 0) {
                 System.out.println(strikeBallCheck.get("Strike") + " Strike, " + strikeBallCheck.get("Ball") + " Ball");
             } else {
