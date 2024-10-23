@@ -6,49 +6,59 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
         BaseballGame baseballGame = new BaseballGame();
 
         HashSet<Integer> randomNum = baseballGame.randomNum();
-
 
         while (true) {
             Map<String, Integer> strikeBallCheck = new HashMap<>() {{
                 put("Strike", 0);
                 put("Ball", 0);
             }};
+
             ArrayList<Integer> result = new ArrayList<>(3);
             AtomicInteger index = new AtomicInteger();
 
+            int inputResultNum = 0;
+
             try {
-                // 정답을 맞출 3개의 숫자를 입력 받기
-                while (result.size() < 3) {
-                    System.out.print((result.size() + 1) + " 번째 숫자를 입력해 주세요: ");
-
-                    int inputNum = scanner.nextInt();
-
-                    if (result.contains(inputNum) || inputNum < 1 || inputNum > 9) {
-                        // 숫자를 중복 입력했을 때의 예외처리
-                        System.out.println("잘못된 입력입니다. 다시 입력해 주세요.(중복 숫자, 1 - 9를 벗어난 수는 입력될 수 없습니다)");
-                        continue;
-                    }
-                    result.add(inputNum);
-                }
-            } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
+                System.out.print("숫자를 입력해 주세요: ");
+                inputResultNum = scanner.nextInt();
+            } catch (Exception e) {
+                System.out.println("숫자만 입력 가능합니다.");
+                // 무한 루프 발생으로 인한 입력 초기화
+                scanner.next();
+                continue;
             }
 
-            System.out.println("" + result.get(0) + result.get(1) + result.get(2));
+            for (int i = inputResultNum; i > 0; i /= 10) {
+                // 중복된 숫자가 있을 경우 예외 처리
+                if (!result.contains(i % 10)) {
+                    result.add(i % 10);
+                } else {
+                    break;
+                }
+            }
+
+            if (result.size() != 3 || inputResultNum >= 1000 || result.contains(0)) {
+                // 3자리가 아니거나 0이 포함 되었을 경우 예외처리
+                System.out.println("다시 입력해 주세요.");
+                continue;
+            } else {
+                // 입력 숫자와 같게 만들기 위해 Array reverse
+                Collections.reverse(result);
+            }
+
+            System.out.println(inputResultNum);
 
             randomNum.forEach((number) -> {
                 if (Objects.equals(number, result.get(index.get()))) {
                     // Strike 인지 체크
                     strikeBallCheck.put("Strike", strikeBallCheck.get("Strike") + 1);
                 } else {
-                    // Strike 가 아니라면 Ball 인지 체크
-                    for (int i = 0; i < result.size(); i++) {
-                        if (Objects.equals(result.get(i), number)) {
-
+                    // Ball 인지 체크
+                    for (Integer integer : result) {
+                        if (Objects.equals(integer, number)) {
                             strikeBallCheck.put("Ball", strikeBallCheck.get("Ball") + 1);
                             break;
                         }
