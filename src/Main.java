@@ -1,6 +1,11 @@
 import baseballGame.BaseballGame;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -10,16 +15,19 @@ public class Main {
 
         BaseballGame baseballGame = new BaseballGame();
         HashSet<Integer> randomNum = baseballGame.randomNum(3);
-        Map<Integer, Integer> gameCount = new HashMap<>();
+        HashMap<Integer, Integer> gameCount = new HashMap<>();
 
-        int count = 0;
-        // 게임을 다시 시작했는지 확인하기 위한 변수
-        boolean gameReset = true;
-
+        // 게임 시도 횟수
+        int tryCount = 0;
+        // 게임 자리수 변수
         int digitNum = 3;
 
+        // 게임을 다시 시작했는지 확인하기 위한 변수
+        boolean isGameReset = true;
+
+
         while (true) {
-            Map<String, Integer> strikeBallCheck = new HashMap<>() {{
+            HashMap<String, Integer> strikeBallCheck = new HashMap<>() {{
                 put("Strike", 0);
                 put("Ball", 0);
             }};
@@ -29,7 +37,7 @@ public class Main {
 
             String gameType;
 
-            if (gameReset) {
+            if (isGameReset) {
                 System.out.print("0. 자리수 설정(default: 3)  1. 게임 시작  2. 게임 기록 보기  3. 종료하기 \n입력: ");
 
                 gameType = scanner.nextLine();
@@ -67,7 +75,7 @@ public class Main {
                     System.out.println("선택 가능한 숫자를 입력해 주세요.");
                     continue;
                 }
-                gameReset = false;
+                isGameReset = false;
             }
 
             int inputResultNum = 0;
@@ -118,15 +126,18 @@ public class Main {
                 index.set(index.get() + 1);
             });
 
-            count++;
+            tryCount++;
 
             // 게임 종료 체크
             if (strikeBallCheck.get("Strike") == digitNum) {
                 System.out.println("3 Strike! Game is over!");
-                gameReset = true;
+                // 다시 게임을 재시작 할 수 있도록 isGameReset 을 true 로 설정
+                isGameReset = true;
+                // 입력값이 버퍼에 남아있으므로 버퍼를 초기화
                 scanner.nextLine();
-                gameCount.put(gameCount.size() + 1, count);
-                count = 0;
+                // 게임 실행 횟수 저장
+                gameCount.put(gameCount.size() + 1, tryCount);
+                tryCount = 0;
             } else if (strikeBallCheck.get("Strike") != 0 || strikeBallCheck.get("Ball") != 0) {
                 System.out.println(strikeBallCheck.get("Strike") + " Strike, " + strikeBallCheck.get("Ball") + " Ball");
             } else {
