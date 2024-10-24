@@ -21,7 +21,6 @@ public class Main {
         int tryCount = 0;
         // 게임 자리수 변수
         int digitNum = 3;
-
         // 게임을 다시 시작했는지 확인하기 위한 변수
         boolean isGameReset = true;
 
@@ -43,17 +42,24 @@ public class Main {
                 gameType = scanner.nextLine();
 
                 if (Objects.equals(gameType, "0")) {
-                    // 게임 난이도 지정
-                    System.out.print("설정하고자 하는 자리수를 입력 하세요(3, 4, 5 중 선택해 주세요.): ");
-                    String inputString = scanner.nextLine();
 
-                    if (Pattern.matches("[3-5]", inputString)) {
-                        // 3, 4, 5만 입력 가능
-                        digitNum = Integer.parseInt(inputString);
-                        randomNum = baseballGame.randomNum(digitNum);
-                    } else {
-                        System.out.println("자릿수를 다시 입력해주세요.");
-                        continue;
+                    while(true) {
+                        try {
+                            // 게임 난이도 지정
+                            System.out.print("설정하고자 하는 자리수를 입력 하세요(3, 4, 5 중 선택해 주세요.): ");
+                            digitNum = scanner.nextInt();
+
+                            if (digitNum > 2 && digitNum < 6) {
+                                // 3, 4, 5만 입력 가능
+                                randomNum = baseballGame.randomNum(digitNum);
+                                break;
+                            } else {
+                                throw new Exception();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("숫자가 아니거나 범위를 벗어났습니다. 다시 입력해 주세요.");
+                            scanner.nextLine();
+                        }
                     }
 
                 } else if (Objects.equals(gameType, "3")) {
@@ -66,15 +72,18 @@ public class Main {
                         System.out.println("게임을 시작한 적이 없어 기록이 없습니다. 게임 시도 후 다시 확인해 주세요.");
                         continue;
                     }
+
                     gameCount.forEach((key, value) -> {
                         System.out.println(key + "번째 게임 : 시도 횟수 - " + value);
                     });
+
                     continue;
                 } else if (!Objects.equals(gameType, "1")) {
                     // 잘못된 문자 입력을 받았을 경우 예외 처리
                     System.out.println("선택 가능한 숫자를 입력해 주세요.");
                     continue;
                 }
+
                 isGameReset = false;
             }
 
@@ -123,6 +132,7 @@ public class Main {
                         }
                     }
                 }
+
                 index.set(index.get() + 1);
             });
 
