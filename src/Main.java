@@ -17,8 +17,6 @@ public class Main {
         baseballGame.createRandomNum(3);
         HashMap<Integer, Integer> gameCount = new HashMap<>();
 
-        // 게임 시도 횟수
-        int tryCount = 0;
         // 게임 자리수 변수
         int digitNum = 3;
         // 게임을 다시 시작했는지 확인하기 위한 변수
@@ -26,13 +24,7 @@ public class Main {
 
 
         while (true) {
-            HashMap<String, Integer> strikeBallCheck = new HashMap<>() {{
-                put("Strike", 0);
-                put("Ball", 0);
-            }};
-
             ArrayList<Integer> result = new ArrayList<>();
-
             String gameType;
 
             if (isGameReset) {
@@ -43,14 +35,13 @@ public class Main {
 
                 if (Objects.equals(gameType, "0")) {
 
-                    while(true) {
+                    while (true) {
                         try {
                             // 게임 난이도 지정
                             System.out.print("설정하고자 하는 자리수를 입력 하세요(3, 4, 5 중 선택해 주세요.): ");
                             digitNum = scanner.nextInt();
 
                             if (digitNum > 2 && digitNum < 6) {
-                                // 3, 4, 5만 입력 가능
                                 baseballGame.createRandomNum(digitNum);
                                 break;
                             } else {
@@ -118,24 +109,12 @@ public class Main {
 
             System.out.println(inputResultNum);
 
-            baseballGame.StrikeBallCheck(strikeBallCheck, result);
+            baseballGame.strikeBallCheck(result);
+            isGameReset = baseballGame.gameEndCheck(digitNum, gameCount);
 
-            tryCount++;
-
-            // 게임 종료 체크
-            if (strikeBallCheck.get("Strike") == digitNum) {
-                System.out.println("3 Strike! Game is over!");
-                // 다시 게임을 재시작 할 수 있도록 isGameReset 을 true 로 설정
-                isGameReset = true;
-                // 입력값이 버퍼에 남아있으므로 버퍼를 초기화
+            // 버퍼 내용 제거
+            if (isGameReset) {
                 scanner.nextLine();
-                // 게임 실행 횟수 저장
-                gameCount.put(gameCount.size() + 1, tryCount);
-                tryCount = 0;
-            } else if (strikeBallCheck.get("Strike") != 0 || strikeBallCheck.get("Ball") != 0) {
-                System.out.println(strikeBallCheck.get("Strike") + " Strike, " + strikeBallCheck.get("Ball") + " Ball");
-            } else {
-                System.out.println("Out");
             }
         }
     }
