@@ -14,7 +14,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         BaseballGame baseballGame = new BaseballGame();
-        HashSet<Integer> randomNum = baseballGame.randomNum(3);
+        baseballGame.createRandomNum(3);
         HashMap<Integer, Integer> gameCount = new HashMap<>();
 
         // 게임 시도 횟수
@@ -31,8 +31,7 @@ public class Main {
                 put("Ball", 0);
             }};
 
-            ArrayList<Integer> result = new ArrayList<>(digitNum);
-            AtomicInteger index = new AtomicInteger();
+            ArrayList<Integer> result = new ArrayList<>();
 
             String gameType;
 
@@ -40,6 +39,7 @@ public class Main {
                 System.out.print("0. 자리수 설정(default: 3)  1. 게임 시작  2. 게임 기록 보기  3. 종료하기 \n입력: ");
 
                 gameType = scanner.nextLine();
+                baseballGame.createRandomNum(3);
 
                 if (Objects.equals(gameType, "0")) {
 
@@ -51,7 +51,7 @@ public class Main {
 
                             if (digitNum > 2 && digitNum < 6) {
                                 // 3, 4, 5만 입력 가능
-                                randomNum = baseballGame.randomNum(digitNum);
+                                baseballGame.createRandomNum(digitNum);
                                 break;
                             } else {
                                 throw new Exception();
@@ -83,7 +83,6 @@ public class Main {
                     System.out.println("선택 가능한 숫자를 입력해 주세요.");
                     continue;
                 }
-
                 isGameReset = false;
             }
 
@@ -119,22 +118,7 @@ public class Main {
 
             System.out.println(inputResultNum);
 
-            randomNum.forEach((number) -> {
-                if (Objects.equals(number, result.get(index.get()))) {
-                    // Strike 인지 체크
-                    strikeBallCheck.put("Strike", strikeBallCheck.get("Strike") + 1);
-                } else {
-                    // Ball 인지 체크
-                    for (Integer integer : result) {
-                        if (Objects.equals(integer, number)) {
-                            strikeBallCheck.put("Ball", strikeBallCheck.get("Ball") + 1);
-                            break;
-                        }
-                    }
-                }
-
-                index.set(index.get() + 1);
-            });
+            baseballGame.StrikeBallCheck(strikeBallCheck, result);
 
             tryCount++;
 
